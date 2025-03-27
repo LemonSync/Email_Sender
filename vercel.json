@@ -14,6 +14,10 @@
     {
       "src": "/send-email",
       "dest": "/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
     }
   ]
 }
