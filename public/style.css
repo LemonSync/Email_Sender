@@ -1,8 +1,8 @@
 /* Tema Gelap Mewah */
 body {
-    background-color: #121212;
+    background-color: #181818;
     color: #e0e0e0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,21 +10,26 @@ body {
     margin: 0;
 }
 
-.container {
-    background: #1e1e1e;
-    padding: 30px;
+/* Kartu Kontainer */
+.card {
+    background: linear-gradient(145deg, #1e1e1e, #252525);
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(255, 215, 0, 0.2);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
     text-align: center;
     width: 100%;
     max-width: 400px;
+    border: 1px solid #FFD700;
 }
 
+/* Judul */
 h2 {
     color: #FFD700;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    font-size: 22px;
 }
 
+/* Input Form */
 .form-group {
     margin-bottom: 15px;
     text-align: left;
@@ -58,6 +63,7 @@ textarea {
     resize: none;
 }
 
+/* Tombol Kirim */
 button {
     width: 100%;
     padding: 12px;
@@ -77,6 +83,7 @@ button:hover {
     box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
 }
 
+/* Status Pesan */
 #statusMessage {
     margin-top: 15px;
     font-size: 14px;
