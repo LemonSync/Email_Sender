@@ -1,8 +1,8 @@
-/* Tema Gelap */
+/* Tema Gelap Mewah */
 body {
     background-color: #121212;
     color: #e0e0e0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,59 +12,72 @@ body {
 
 .container {
     background: #1e1e1e;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(255, 215, 0, 0.2);
     text-align: center;
-    width: 350px;
+    width: 100%;
+    max-width: 400px;
 }
 
 h2 {
     color: #FFD700;
+    margin-bottom: 20px;
 }
 
 .form-group {
-    margin: 10px 0;
+    margin-bottom: 15px;
     text-align: left;
 }
 
 label {
     font-size: 14px;
     color: #FFD700;
+    display: block;
+    margin-bottom: 5px;
 }
 
 input, textarea {
     width: 100%;
-    padding: 10px;
-    margin-top: 5px;
+    padding: 12px;
     background: #2c2c2c;
     border: 1px solid #FFD700;
-    border-radius: 5px;
-    color: white;
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #ffcc00;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
 textarea {
-    height: 100px;
+    height: 120px;
     resize: none;
 }
 
 button {
     width: 100%;
-    padding: 10px;
-    background: #FFD700;
+    padding: 12px;
+    background: linear-gradient(145deg, #FFD700, #ffcc00);
     border: none;
-    color: black;
+    color: #1e1e1e;
     font-size: 16px;
-    border-radius: 5px;
+    font-weight: bold;
+    border-radius: 6px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
 button:hover {
-    background: #ffcc00;
+    background: linear-gradient(145deg, #ffcc00, #FFD700);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
 }
 
 #statusMessage {
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 14px;
 }
