@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Email</title>
+    <title>Kirim Email Mewah</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>📧 Kirim Email</h2>
+        <h2>Formulir Pengiriman Email</h2>
         <form id="emailForm">
             <div class="form-group">
-                <label for="to">📩 Kepada</label>
-                <input type="email" id="to" name="to" placeholder="Masukkan email penerima" required>
+                <label for="to">Kepada</label>
+                <input type="email" id="to" name="to" placeholder="Email Penerima" required>
             </div>
             <div class="form-group">
-                <label for="subject">📝 Subjek</label>
-                <input type="text" id="subject" name="subject" placeholder="Masukkan subjek email" required>
+                <label for="subject">Subjek</label>
+                <input type="text" id="subject" name="subject" placeholder="Subjek Email" required>
             </div>
             <div class="form-group">
-                <label for="message">💬 Pesan</label>
-                <textarea id="message" name="message" placeholder="Tulis pesan di sini..." required></textarea>
+                <label for="message">Pesan</label>
+                <textarea id="message" name="message" placeholder="Tulis pesan Anda di sini..." required></textarea>
             </div>
-            <button type="submit">🚀 Kirim</button>
+            <button type="submit">Kirim Email</button>
         </form>
         <p id="statusMessage"></p>
     </div>
@@ -35,7 +35,7 @@
             const message = document.getElementById('message').value;
 
             const statusMessage = document.getElementById('statusMessage');
-            statusMessage.textContent = "⏳ Mengirim...";
+            statusMessage.textContent = "Mengirim...";
             statusMessage.style.color = "#FFD700";
 
             try {
@@ -47,15 +47,15 @@
 
                 const result = await response.json();
                 if (response.ok) {
-                    statusMessage.textContent = "✅ Email berhasil dikirim!";
+                    statusMessage.textContent = "Email berhasil dikirim!";
                     statusMessage.style.color = "#00FF7F";
                     document.getElementById('emailForm').reset();
                 } else {
-                    statusMessage.textContent = "❌ " + result.message;
+                    statusMessage.textContent = "Gagal mengirim email: " + result.message;
                     statusMessage.style.color = "#FF4500";
                 }
             } catch (error) {
-                statusMessage.textContent = "⚠️ Terjadi kesalahan!";
+                statusMessage.textContent = "Terjadi kesalahan saat mengirim email.";
                 statusMessage.style.color = "#FF4500";
             }
         });
