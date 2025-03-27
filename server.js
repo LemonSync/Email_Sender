@@ -8,15 +8,14 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,  // Email pengirim (Gunakan App Password Google)
-        pass: process.env.EMAIL_PASS   // App Password dari Google
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
 app.post('/send-email', async (req, res) => {
     const { to, subject, message } = req.body;
 
-    // Template HTML email
     const htmlContent = `
         <div style="
             font-family: 'Arial', sans-serif; 
@@ -49,11 +48,11 @@ app.post('/send-email', async (req, res) => {
             </div>
 
             <p style="text-align: center; font-size: 14px; color: #888; margin-top: 20px;">
-                Sent from <b>Your Website</b>
+                Sent from <b>Lemon Email Sender</b>
             </p>
 
             <div style="text-align: center; margin-top: 20px;">
-                <a href="https://your-website.com" style="
+                <a href="https://lemon-email.vercel.app" style="
                     background-color: #4caf50; 
                     color: #ffffff; 
                     text-decoration: none; 
@@ -69,7 +68,7 @@ app.post('/send-email', async (req, res) => {
         from: `"Your Website" <${process.env.EMAIL_USER}>`,
         to,
         subject,
-        html: htmlContent  // Kirim dalam format HTML
+        html: htmlContent
     };
 
     try {
