@@ -1,56 +1,84 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
-const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
-app.use(express.static('public')); // Melayani file statis dari folder "public"
 
-// Cek apakah variabel environment terbaca
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "****" : "MISSING");
-
-// Konfigurasi transporter Nodemailer
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // true untuk port 465, false untuk port 587
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: process.env.EMAIL_USER,  // Email pengirim (Gunakan App Password Google)
+        pass: process.env.EMAIL_PASS   // App Password dari Google
     }
 });
 
-// Endpoint untuk mengirim email
 app.post('/send-email', async (req, res) => {
     const { to, subject, message } = req.body;
 
-    if (!to || !subject || !message) {
-        return res.status(400).json({ message: "Semua field harus diisi!" });
-    }
+    // Template HTML email
+    const htmlContent = `
+        <div style="
+            font-family: 'Arial', sans-serif; 
+            max-width: 600px; 
+            margin: auto; 
+            padding: 25px; 
+            border-radius: 10px; 
+            background-color: #121212; 
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        ">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 style="color: #4caf50; font-size: 24px; margin: 0;">
+                    📩 ${subject}
+                </h2>
+                <p style="color: #aaaaaa; font-size: 14px; margin-top: 5px;">
+                    You've got a new message!
+                </p>
+            </div>
+
+            <div style="
+                background-color: #1e1e1e; 
+                padding: 20px; 
+                border-radius: 8px;
+                border-left: 5px solid #4caf50;
+            ">
+                <p style="font-size: 16px; line-height: 1.6; color: #ffffff; text-align: justify;">
+                    ${message}
+                </p>
+            </div>
+
+            <p style="text-align: center; font-size: 14px; color: #888; margin-top: 20px;">
+                Sent from <b>Your Website</b>
+            </p>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="https://your-website.com" style="
+                    background-color: #4caf50; 
+                    color: #ffffff; 
+                    text-decoration: none; 
+                    padding: 10px 20px; 
+                    border-radius: 5px; 
+                    font-size: 14px;
+                ">Visit Website</a>
+            </div>
+        </div>
+    `;
 
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: `"Your Website" <${process.env.EMAIL_USER}>`,
         to,
         subject,
-        text: message
+        html: htmlContent  // Kirim dalam format HTML
     };
 
     try {
         await transporter.sendMail(mailOptions);
-        res.json({ message: 'Email berhasil dikirim!' });
+        res.json({ message: "Email berhasil dikirim!" });
     } catch (error) {
-        console.error("Error saat mengirim email:", error);
-        res.status(500).json({ message: 'Gagal mengirim email', error: error.message });
+        res.status(500).json({ message: "Gagal mengirim email", error });
     }
 });
 
-// Menangani semua request yang tidak cocok dengan API
-app.get('*', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server berjalan di port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server berjalan di port ${PORT}`));
