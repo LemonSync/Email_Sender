@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirim Email</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Kirim Email</h2>
+    <form id="emailForm">
+        <label for="to">Kepada:</label>
+        <input type="email" id="to" name="to" required><br>
+        
+        <label for="subject">Subjek:</label>
+        <input type="text" id="subject" name="subject" required><br>
+        
+        <label for="message">Pesan:</label>
+        <textarea id="message" name="message" required></textarea><br>
+        
+        <button type="submit">Kirim</button>
+    </form>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const to = document.getElementById('to').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            const response = await fetch('/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ to, subject, message })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script>
+</body>
+</html>
