@@ -18,6 +18,10 @@
     {
       "src": "/(.*)",
       "dest": "/public/index.html"
-    }
+    },
+     {
+       "src": "/style.css",
+       "dest": "/style.css"
+     }
   ]
 }
