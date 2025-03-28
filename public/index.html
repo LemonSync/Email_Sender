@@ -31,60 +31,67 @@
             </form>
             <p id="statusMessage"></p>
         </div>
+
+        <div class="footer">
+            <p>Dibuat dengan ♥️ oleh <a href="https://github.com/LemonSync" target="_blank" rel="noopener noreferrer">Lemon</a></p>
+        </div>
     </div>
 
-      <footer>
-    &copy; 2025 Dibuat dengan ❤️ oleh <a href="https://github.com/LemonSync" target="_blank">Lemon</a>
-      </footer>
     <script>
-        document.getElementById('emailForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const to = document.getElementById('to').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailForm = document.getElementById('emailForm');
             const statusMessage = document.getElementById('statusMessage');
             const buttonText = document.getElementById('buttonText');
             const buttonLoader = document.getElementById('buttonLoader');
             
-            buttonText.textContent = "Mengirim...";
-            buttonLoader.style.display = "inline-block";
-            statusMessage.innerHTML = '<span class="loading"></span> Sedang mengirim email...';
-            statusMessage.style.color = "#4caf50";
-            document.querySelector('button').disabled = true;
+            emailForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                const formData = {
+                    to: document.getElementById('to').value,
+                    subject: document.getElementById('subject').value,
+                    message: document.getElementById('message').value
+                };
 
-            try {
-                const response = await fetch('/send-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ to, subject, message })
-                });
+                buttonText.textContent = "Mengirim...";
+                buttonLoader.style.display = "inline-block";
+                statusMessage.innerHTML = '<span class="loading"></span> Sedang mengirim email...';
+                statusMessage.style.color = "#4caf50";
+                emailForm.querySelector('button').disabled = true;
 
-                const result = await response.json();
-                if (response.ok) {
-                    statusMessage.innerHTML = "✅ Email berhasil dikirim!";
-                    statusMessage.style.color = "#4caf50";
-                    document.getElementById('emailForm').reset();
+                try {
+                    const response = await fetch('/send-email', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
                     
-                    const card = document.querySelector('.card');
-                    card.style.transform = "translateY(-5px)";
-                    card.style.boxShadow = "0 15px 30px rgba(76, 175, 80, 0.3)";
-                    setTimeout(() => {
-                        card.style.transform = "";
-                        card.style.boxShadow = "";
-                    }, 1000);
-                } else {
-                    statusMessage.innerHTML = "❌ " + result.message;
+                    if (response.ok) {
+                        statusMessage.innerHTML = "✅ Email berhasil dikirim!";
+                        statusMessage.style.color = "#4caf50";
+                        emailForm.reset();
+                        
+                        const card = document.querySelector('.card');
+                        card.classList.add('success-animation');
+                        setTimeout(() => {
+                            card.classList.remove('success-animation');
+                        }, 1000);
+                    } else {
+                        statusMessage.innerHTML = "❌ " + (result.message || "Gagal mengirim email");
+                        statusMessage.style.color = "#f44336";
+                    }
+                } catch (error) {
+                    statusMessage.innerHTML = "⚠️ Terjadi kesalahan jaringan!";
                     statusMessage.style.color = "#f44336";
+                    console.error('Error:', error);
+                } finally {
+                    buttonText.textContent = "Kirim Email";
+                    buttonLoader.style.display = "none";
+                    emailForm.querySelector('button').disabled = false;
                 }
-            } catch (error) {
-                statusMessage.innerHTML = "⚠️ Terjadi kesalahan jaringan!";
-                statusMessage.style.color = "#f44336";
-            } finally {
-                buttonText.textContent = "Kirim Email";
-                buttonLoader.style.display = "none";
-                document.querySelector('button').disabled = false;
-            }
+            });
         });
     </script>
 </body>
