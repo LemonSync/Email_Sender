@@ -65,7 +65,7 @@ app.post('/send-email', async (req, res) => {
     `;
 
     const mailOptions = {
-        from: `"Your Website" <${process.env.EMAIL_USER}>`,
+        from: `"Lemon Email Sender" <${process.env.EMAIL_USER}>`,
         to,
         subject,
         html: htmlContent
