@@ -205,3 +205,13 @@ button:disabled {
         padding: 12px;
     }
 }
+
+.spam-img {
+    border: 2px solid darkgreen;
+    border-radius: 10px;
+    width: 50%;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    display: flex;
+}
