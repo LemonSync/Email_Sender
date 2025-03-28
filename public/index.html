@@ -4,27 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kirim Email</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="card">
-        <h2>📩 Kirim Email</h2>
-        <form id="emailForm">
-            <div class="form-group">
-                <label for="to">Kepada</label>
-                <input type="email" id="to" name="to" placeholder="Masukkan email penerima" required>
-            </div>
-            <div class="form-group">
-                <label for="subject">Subjek</label>
-                <input type="text" id="subject" name="subject" placeholder="Masukkan subjek email" required>
-            </div>
-            <div class="form-group">
-                <label for="message">Pesan</label>
-                <textarea id="message" name="message" placeholder="Tulis pesan Anda di sini..." required></textarea>
-            </div>
-            <button type="submit">Kirim Email</button>
-        </form>
-        <p id="statusMessage"></p>
+    <div class="container">
+        <div class="card">
+            <h2>📩 Kirim Email</h2>
+            <form id="emailForm">
+                <div class="form-group">
+                    <label for="to">Kepada</label>
+                    <input type="email" id="to" name="to" placeholder="Masukkan email penerima" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subjek</label>
+                    <input type="text" id="subject" name="subject" placeholder="Masukkan subjek email" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Pesan</label>
+                    <textarea id="message" name="message" placeholder="Tulis pesan Anda di sini..." required></textarea>
+                </div>
+                <button type="submit">
+                    <span id="buttonText">Kirim Email</span>
+                    <span id="buttonLoader" class="loader"></span>
+                </button>
+            </form>
+            <p id="statusMessage"></p>
+        </div>
     </div>
 
     <script>
@@ -35,8 +41,14 @@
             const message = document.getElementById('message').value;
 
             const statusMessage = document.getElementById('statusMessage');
-            statusMessage.textContent = "Mengirim...";
-            statusMessage.style.color = "#FFD700";
+            const buttonText = document.getElementById('buttonText');
+            const buttonLoader = document.getElementById('buttonLoader');
+            
+            buttonText.textContent = "Mengirim...";
+            buttonLoader.style.display = "inline-block";
+            statusMessage.innerHTML = '<span class="loading"></span> Sedang mengirim email...';
+            statusMessage.style.color = "#4caf50";
+            document.querySelector('button').disabled = true;
 
             try {
                 const response = await fetch('/send-email', {
@@ -47,16 +59,28 @@
 
                 const result = await response.json();
                 if (response.ok) {
-                    statusMessage.textContent = "✅ Email berhasil dikirim!";
-                    statusMessage.style.color = "#00FF7F";
+                    statusMessage.innerHTML = "✅ Email berhasil dikirim!";
+                    statusMessage.style.color = "#4caf50";
                     document.getElementById('emailForm').reset();
+                    
+                    const card = document.querySelector('.card');
+                    card.style.transform = "translateY(-5px)";
+                    card.style.boxShadow = "0 15px 30px rgba(76, 175, 80, 0.3)";
+                    setTimeout(() => {
+                        card.style.transform = "";
+                        card.style.boxShadow = "";
+                    }, 1000);
                 } else {
-                    statusMessage.textContent = "❌ " + result.message;
-                    statusMessage.style.color = "#FF4500";
+                    statusMessage.innerHTML = "❌ " + result.message;
+                    statusMessage.style.color = "#f44336";
                 }
             } catch (error) {
-                statusMessage.textContent = "⚠️ Terjadi kesalahan!";
-                statusMessage.style.color = "#FF4500";
+                statusMessage.innerHTML = "⚠️ Terjadi kesalahan jaringan!";
+                statusMessage.style.color = "#f44336";
+            } finally {
+                buttonText.textContent = "Kirim Email";
+                buttonLoader.style.display = "none";
+                document.querySelector('button').disabled = false;
             }
         });
     </script>
