@@ -26,6 +26,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    line-height: 1.6;
 }
 
 .container {
@@ -165,6 +166,30 @@ button:disabled {
     font-size: 14px;
     min-height: 20px;
     transition: all 0.3s ease;
+}
+
+.success-animation {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(76, 175, 80, 0.3);
+}
+
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 15px 0;
+}
+
+.footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--primary);
+    text-decoration: underline;
 }
 
 @media (max-width: 480px) {
