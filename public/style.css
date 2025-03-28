@@ -1,41 +1,64 @@
-/* Tema Hijau Tua dan Gelap */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-dark: #0a1e0a;
+    --primary: #2e7d32;
+    --primary-light: #4caf50;
+    --dark-bg: #121212;
+    --dark-card: #1a2e1a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #bdbdbd;
+    --success: #4caf50;
+    --error: #f44336;
+    --warning: #ff9800;
+}
+
 body {
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
 }
 
-/* Kartu Kontainer */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
 .card {
-    background: linear-gradient(145deg, #1a2e1a, #0f1a0f);
+    background: linear-gradient(145deg, var(--dark-card), var(--primary-dark));
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     text-align: center;
     width: 100%;
     max-width: 450px;
-    border: 1px solid #2e7d32;
-    transition: transform 0.3s ease;
+    margin: 0 auto;
+    border: 1px solid var(--primary);
+    transition: all 0.3s ease;
 }
 
 .card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
 }
 
-/* Judul */
 h2 {
-    color: #4caf50;
-    margin-bottom: 20px;
+    color: var(--primary-light);
+    margin-bottom: 25px;
     font-size: 24px;
+    font-weight: 600;
 }
 
-/* Input Form */
 .form-group {
     margin-bottom: 20px;
     text-align: left;
@@ -43,69 +66,91 @@ h2 {
 
 label {
     font-size: 14px;
-    color: #4caf50;
+    color: var(--primary-light);
     display: block;
     margin-bottom: 8px;
+    font-weight: 500;
 }
 
 input, textarea {
     width: 100%;
-    padding: 12px;
-    background: #1e1e1e;
-    border: 1px solid #2e7d32;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--primary);
     border-radius: 8px;
-    color: #e0e0e0;
+    color: var(--text-primary);
     font-size: 14px;
+    font-family: 'Poppins', sans-serif;
     transition: all 0.3s ease;
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
 }
 
 input:focus, textarea:focus {
     outline: none;
-    border-color: #4caf50;
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
 }
 
 textarea {
     height: 150px;
-    resize: none;
+    resize: vertical;
+    min-height: 100px;
 }
 
-/* Tombol Kirim */
 button {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(145deg, #2e7d32, #4caf50);
+    background: linear-gradient(145deg, var(--primary), var(--primary-light));
     border: none;
-    color: #ffffff;
+    color: white;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
+    position: relative;
+    overflow: hidden;
 }
 
 button:hover {
-    background: linear-gradient(145deg, #4caf50, #2e7d32);
+    background: linear-gradient(145deg, var(--primary-light), var(--primary));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
 }
 
-/* Status Pesan */
-#statusMessage {
-    margin-top: 20px;
-    font-size: 14px;
-    min-height: 20px;
+button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
-/* Animasi Loading */
+.loader {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .loading {
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     border: 3px solid rgba(76, 175, 80, 0.3);
     border-radius: 50%;
-    border-top-color: #4caf50;
+    border-top-color: var(--primary-light);
     animation: spin 1s ease-in-out infinite;
     margin-right: 10px;
     vertical-align: middle;
@@ -113,4 +158,25 @@ button:hover {
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+#statusMessage {
+    margin-top: 20px;
+    font-size: 14px;
+    min-height: 20px;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 25px 20px;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    input, textarea, button {
+        padding: 12px;
+    }
 }
