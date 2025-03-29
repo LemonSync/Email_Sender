@@ -48,6 +48,7 @@
 
 ---
 
+### Request BODY Json:
   ```csharp
 {
   "to": "email_penerima@example.com",
@@ -56,6 +57,12 @@
 }
 ```
 
+### Response:
+  ```csharp
+{
+  "message": "Email berhasil dikirim"
+}
+```
 ---
 
 ## 🚀 Cara Menggunakan
