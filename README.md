@@ -48,6 +48,16 @@
 
 ---
 
+  ```csharp
+{
+  "to": "email_penerima@example.com",
+  "subject": "Judul Email",
+  "message": "Isi pesan email"
+}
+```
+
+---
+
 ## 🚀 Cara Menggunakan
 1. Buka website **[Lemon Email](https://lemon-email.vercel.app/)**  
 2. Masukkan alamat email penerima  
