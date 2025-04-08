@@ -12,6 +12,7 @@
     "dotenv": "^16.4.1",
     "cors": "^2.8.5",
     "helmet": "^7.0.0",
-    "express-validator": "^7.0.1"
+    "express-validator": "^7.0.1",
+    "express-slow-down": "^1.4.0"
   }
 }
