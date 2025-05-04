@@ -12,21 +12,19 @@ const app = express();
 app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
 
-// Rate Limiter (15 requests per 15 minutes)
+// Rate Limiter (15 requests per 15 menit)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 15,
   message: 'Too many requests from this IP, please try again after 15 minutes'
 });
 
-// Speed Limiter (slows down after 5 requests)
 const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000,
   delayAfter: 5,
   delayMs: (hits) => hits * 200
 });
 
-// Email Validation
 const validateEmail = [
   body('to').isEmail().normalizeEmail(),
   body('subject').trim().isLength({ max: 100 }).escape(),
@@ -126,7 +124,7 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
     `;
 
     const mailOptions = {
-      from: `"Lemon Secure" <${process.env.EMAIL_USER}>`,
+      from: `"Lemon Email Sender" <${process.env.EMAIL_USER}>`,
       to,
       subject: `[Secure] ${subject}`,
       html: htmlContent,
