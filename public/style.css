@@ -73,7 +73,7 @@ label {
     font-weight: 500;
 }
 
-input, textarea {
+input, textarea, select {
     width: 100%;
     padding: 14px;
     background: rgba(0, 0, 0, 0.2);
