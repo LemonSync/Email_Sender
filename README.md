@@ -53,7 +53,8 @@
 {
   "to": "email_penerima@example.com",
   "subject": "Judul Email",
-  "message": "Isi pesan email"
+  "message": "Isi pesan email",
+  "template": "default/dark/struck"
 }
 ```
 
