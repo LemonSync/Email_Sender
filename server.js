@@ -12,11 +12,10 @@ const app = express();
 app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
 
-// Rate Limiter (15 requests per 15 menit)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 15,
-  message: 'Too many requests from this IP, please try again after 15 minutes'
+  message: 'Terlalu banyak request, coba lagi dalam 15 menit'
 });
 
 const speedLimiter = slowDown({
@@ -31,9 +30,8 @@ const validateEmail = [
   body('message').trim().isLength({ max: 2000 }).escape()
 ];
 
-// Request Cache (prevents duplicate submissions)
 const requestCache = new Map();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_TTL = 5 * 60 * 1000;
 
 // ==================== EMAIL TRANSPORTER ====================
 const transporter = nodemailer.createTransport({
@@ -50,7 +48,6 @@ const transporter = nodemailer.createTransport({
 // ==================== EMAIL ENDPOINT ====================
 app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) => {
   try {
-    // Validate inputs
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -84,7 +81,6 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
 </div>`
    }
     
-    // Check for duplicate requests
     const requestKey = `${to}-${subject}-${message.substring(0, 50)}`;
     if (requestCache.has(requestKey)) {
       return res.status(429).json({
@@ -93,7 +89,6 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
     }
     requestCache.set(requestKey, Date.now());
     
-    // Block certain domains (add your own)
     const blockedDomains = ['example.com', 'test.com'];
     const recipientDomain = to.split('@')[1];
     if (blockedDomains.includes(recipientDomain)) {
@@ -109,7 +104,6 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
       priority: 'low'
     };
     
-    // Send email with timeout
     const sendMailPromise = transporter.sendMail(mailOptions);
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Email sending timeout')), 10000)
@@ -136,7 +130,6 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🛡️ Secure server running on port ${PORT}`));
 
-// Clear cache periodically
 setInterval(() => {
   const now = Date.now();
   requestCache.forEach((timestamp, key) => {
