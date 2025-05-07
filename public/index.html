@@ -22,6 +22,14 @@
                 <label for="message">Pesan</label>
                 <textarea id="message" name="message" placeholder="Tulis pesan Anda di sini..." required></textarea>
             </div>
+            <div class="form-group">
+                <label for="template">Template</label>
+                <select name="template" id="template">
+                    <option value="default">Default</option>
+                    <option value="dark">Dark</option>
+                    <option value="struck">Struk</option>
+                </select>
+            </div>
             <button type="submit">Kirim Email</button>
         </form>
         <p id="statusMessage"></p>
@@ -41,6 +49,7 @@
             const to = document.getElementById('to').value;
             const subject = document.getElementById('subject').value;
             const message = document.getElementById('message').value;
+            const template = document.getElementById('template').value;
 
             const statusMessage = document.getElementById('statusMessage');
             statusMessage.textContent = "Mengirim...";
@@ -50,7 +59,7 @@
                 const response = await fetch('/send-email', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ to, subject, message })
+                    body: JSON.stringify({ to, subject, message, template })
                 });
 
                 const result = await response.json();
