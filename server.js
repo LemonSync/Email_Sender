@@ -56,29 +56,29 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
     const { to, subject, message, template } = req.body;
 
    const htmlTemplate = {
-  default: `<div style="padding: 20px; font-family: 'Helvetica Neue', sans-serif; background: #BED8C1; border-left: 4px solid #4caf50; border-radius: 5px;">
-  <h3 style="color: #375F3B;">${subject}</h3>
-  <p style="color: #4B6B4E; line-height: 1.6;">${message}</p>
-  <br>
-  <p style="font-size: 12px; color: #355633;">Sent from <a href="https://lemon-email.vercel.app" style="text-decoration: none; color: #12901C;">Lemon Email Sender Web</a></p>
+  default: `<div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+  <h2 style="color: #2c3e50;">${subject}</h2>
+  <p style="color: #333; font-size: 16px; line-height: 1.5;">
+    ${message}
+  </p>
+  <hr style="margin: 20px 0;">
+  <p style="font-size: 14px; color: #999;">This message was sent via <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: green;">Lemon Email Sender</a></b></p>
 </div>`,
   dark: `<div style="background: #1e1e1e; color: #f0f0f0; padding: 20px; border-radius: 8px; font-family: monospace;">
         <h2 style="color: #4caf50;">${subject}</h2>
         <pre style="white-space: pre-wrap; line-height: 1.5; color: #ccc;">${message}</pre>
         <hr style="border-color: #333;">
-        <p style="font-size: 12px; color: #666;">Powered by <a href="https://lemon-email.vercel.app" style="text-decoration: none; color: rgb(255, 255, 255);">Lemon Email Sender</a></p>
+        <p style="font-size: 12px; color: #666;">Powered by <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: #666;">Lemon Email Sender</a></b></p>
 </div>`,
-  struck: `<div style="background-color: #fffbe6; padding: 25px; border-radius: 10px; font-family: Verdana, sans-serif;">
-  <h2 style="color: #d35400;">${subject}</h2>
-  <p style="color: #444; font-size: 15px;">
-    ${message}
-  </p>
-  <div style="margin-top: 20px;">
-    <a href="https://lemon-email.vercel.app" style="background-color: #d35400; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-      Learn More
-    </a>
-  </div>
-</div>`
+  struck: `<div style="padding:20px;border:1px dashed #222;font-size:15px">
+          <tt>Hi <b>${to}</b>
+          <br><br>
+          <p>${message}</p>
+          <br>
+            <hr style="border:0px; border-top:1px dashed #222">
+             <p>Send with <b><a href="https://lemon-email.vercel.app" style="text-decoration: none;">Lemon Email Sender</a></b></p>
+          </tt>
+  </div>`
    }
     
     const requestKey = `${to}-${subject}-${message.substring(0, 50)}`;
