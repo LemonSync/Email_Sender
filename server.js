@@ -14,7 +14,7 @@ app.use(helmet());
 // === GLOBAL RATE LIMIT (15 req/menit untuk seluruh web) ===
 const globalLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 menit
-  max: 15,
+  max: 5,
   keyGenerator: () => 'global', // Semua request dihitung sebagai satu entitas
   message: 'Terlalu banyak permintaan di seluruh web, coba lagi dalam 1 menit.'
 });
