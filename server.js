@@ -10,20 +10,26 @@ const app = express();
 
 // ==================== SECURITY MIDDLEWARES ====================
 app.use(helmet());
+
+// === GLOBAL RATE LIMIT (15 req/menit untuk seluruh web) ===
+const globalLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 menit
+  max: 15,
+  keyGenerator: () => 'global', // Semua request dihitung sebagai satu entitas
+  message: 'Terlalu banyak permintaan di seluruh web, coba lagi dalam 1 menit.'
+});
+app.use(globalLimiter);
+
 app.use(express.json({ limit: '10kb' }));
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 15,
-  message: 'Terlalu banyak request, coba lagi dalam 15 menit'
-});
-
+// === PER-IP SPEED LIMIT (opsional) ===
 const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000,
   delayAfter: 5,
   delayMs: (hits) => hits * 200
 });
 
+// === VALIDASI FORM ===
 const validateEmail = [
   body('to').isEmail().normalizeEmail(),
   body('subject').trim().isLength({ max: 100 }).escape(),
@@ -46,41 +52,37 @@ const transporter = nodemailer.createTransport({
 });
 
 // ==================== EMAIL ENDPOINT ====================
-app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) => {
+app.post('/send-email', speedLimiter, validateEmail, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
+
     const { to, subject, message, template } = req.body;
 
-   const htmlTemplate = {
-  default: `<div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
-  <h2 style="color: #2c3e50;">${subject}</h2>
-  <p style="color: #333; font-size: 16px; line-height: 1.5;">
-    ${message}
-  </p>
-  <hr style="margin: 20px 0;">
-  <p style="font-size: 14px; color: #999;">This message was sent via <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: green;">Lemon Email Sender</a></b></p>
-</div>`,
-  dark: `<div style="background: #1e1e1e; color: #f0f0f0; padding: 20px; border-radius: 8px; font-family: monospace;">
+    const htmlTemplate = {
+      default: `<div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+        <h2 style="color: #2c3e50;">${subject}</h2>
+        <p style="color: #333; font-size: 16px; line-height: 1.5;">${message}</p>
+        <hr style="margin: 20px 0;">
+        <p style="font-size: 14px; color: #999;">This message was sent via <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: green;">Lemon Email Sender</a></b></p>
+      </div>`,
+      dark: `<div style="background: #1e1e1e; color: #f0f0f0; padding: 20px; border-radius: 8px; font-family: monospace;">
         <h2 style="color: #4caf50;">${subject}</h2>
         <pre style="white-space: pre-wrap; line-height: 1.5; color: #ccc;">${message}</pre>
         <hr style="border-color: #333;">
         <p style="font-size: 12px; color: #666;">Powered by <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: #666;">Lemon Email Sender</a></b></p>
-</div>`,
-  struck: `<div style="padding:20px;border:1px dashed #222;font-size:15px">
-          <tt>Hi <b>${to}</b>
-          <br><br>
-          <p>${message}</p>
-          <br>
-            <hr style="border:0px; border-top:1px dashed #222">
-             <p>Send with <b><a href="https://lemon-email.vercel.app" style="text-decoration: none;">Lemon Email Sender</a></b></p>
-          </tt>
-  </div>`
-   }
-    
+      </div>`,
+      struck: `<div style="padding:20px;border:1px dashed #222;font-size:15px">
+        <tt>Hi <b>${to}</b><br><br>
+        <p>${message}</p><br>
+        <hr style="border:0px; border-top:1px dashed #222">
+        <p>Send with <b><a href="https://lemon-email.vercel.app" style="text-decoration: none;">Lemon Email Sender</a></b></p>
+        </tt>
+      </div>`
+    };
+
     const requestKey = `${to}-${subject}-${message.substring(0, 50)}`;
     if (requestCache.has(requestKey)) {
       return res.status(429).json({
@@ -88,14 +90,13 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
       });
     }
     requestCache.set(requestKey, Date.now());
-    
+
     const blockedDomains = ['example.com', 'test.com'];
     const recipientDomain = to.split('@')[1];
     if (blockedDomains.includes(recipientDomain)) {
       return res.status(400).json({ message: 'This email domain is not allowed' });
     }
-  
-    
+
     const mailOptions = {
       from: `"Lemon Email Sender" <${process.env.EMAIL_USER}>`,
       to,
@@ -103,19 +104,19 @@ app.post('/send-email', limiter, speedLimiter, validateEmail, async (req, res) =
       html: htmlTemplate[template],
       priority: 'low'
     };
-    
+
     const sendMailPromise = transporter.sendMail(mailOptions);
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Email sending timeout')), 10000)
     );
-    
+
     await Promise.race([sendMailPromise, timeoutPromise]);
-    
+
     res.json({ message: "Email sent successfully!" });
-    
+
   } catch (error) {
     console.error('Email error:', error.message);
-    
+
     if (error.message.includes('timeout')) {
       res.status(504).json({ message: "Email sending taking too long" });
     } else if (error.code === 'ECONNECTION') {
