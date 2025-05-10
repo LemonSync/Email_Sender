@@ -10,26 +10,26 @@ const app = express();
 
 // ==================== SECURITY MIDDLEWARES ====================
 app.use(helmet());
+app.use(express.json({ limit: '10kb' }));
 
-// === GLOBAL RATE LIMIT (15 req/menit untuk seluruh web) ===
+// ==================== GLOBAL RATE LIMIT (15 req/menit total) ====================
 const globalLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 menit
+  windowMs: 60 * 1000,
   max: 5,
-  keyGenerator: () => 'global', // Semua request dihitung sebagai satu entitas
-  message: 'Terlalu banyak permintaan di seluruh web, coba lagi dalam 1 menit.'
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: () => 'global',
+  message: 'Server sedang sibuk. Coba lagi setelah 1 menit.'
 });
 app.use(globalLimiter);
 
-app.use(express.json({ limit: '10kb' }));
-
-// === PER-IP SPEED LIMIT (opsional) ===
+// ==================== SLOW DOWN PER IP (opsional) ====================
 const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000,
   delayAfter: 5,
   delayMs: (hits) => hits * 200
 });
 
-// === VALIDASI FORM ===
 const validateEmail = [
   body('to').isEmail().normalizeEmail(),
   body('subject').trim().isLength({ max: 100 }).escape(),
@@ -63,23 +63,27 @@ app.post('/send-email', speedLimiter, validateEmail, async (req, res) => {
 
     const htmlTemplate = {
       default: `<div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
-        <h2 style="color: #2c3e50;">${subject}</h2>
-        <p style="color: #333; font-size: 16px; line-height: 1.5;">${message}</p>
-        <hr style="margin: 20px 0;">
-        <p style="font-size: 14px; color: #999;">This message was sent via <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: green;">Lemon Email Sender</a></b></p>
-      </div>`,
+      <h2 style="color: #2c3e50;">${subject}</h2>
+      <p style="color: #333; font-size: 16px; line-height: 1.5;">
+        ${message}
+      </p>
+      <hr style="margin: 20px 0;">
+      <p style="font-size: 14px; color: #999;">This message was sent via <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: green;">Lemon Email Sender</a></b></p>
+    </div>`,
       dark: `<div style="background: #1e1e1e; color: #f0f0f0; padding: 20px; border-radius: 8px; font-family: monospace;">
-        <h2 style="color: #4caf50;">${subject}</h2>
-        <pre style="white-space: pre-wrap; line-height: 1.5; color: #ccc;">${message}</pre>
-        <hr style="border-color: #333;">
-        <p style="font-size: 12px; color: #666;">Powered by <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: #666;">Lemon Email Sender</a></b></p>
-      </div>`,
+            <h2 style="color: #4caf50;">${subject}</h2>
+            <pre style="white-space: pre-wrap; line-height: 1.5; color: #ccc;">${message}</pre>
+            <hr style="border-color: #333;">
+            <p style="font-size: 12px; color: #666;">Powered by <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: #666;">Lemon Email Sender</a></b></p>
+    </div>`,
       struck: `<div style="padding:20px;border:1px dashed #222;font-size:15px">
-        <tt>Hi <b>${to}</b><br><br>
-        <p>${message}</p><br>
-        <hr style="border:0px; border-top:1px dashed #222">
-        <p>Send with <b><a href="https://lemon-email.vercel.app" style="text-decoration: none;">Lemon Email Sender</a></b></p>
-        </tt>
+              <tt>Hi <b>${to}</b>
+              <br><br>
+              <p>${message}</p>
+              <br>
+                <hr style="border:0px; border-top:1px dashed #222">
+                 <p>Send with <b><a href="https://lemon-email.vercel.app" style="text-decoration: none;">Lemon Email Sender</a></b></p>
+              </tt>
       </div>`
     };
 
