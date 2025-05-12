@@ -12,18 +12,13 @@ const app = express();
 app.use(helmet());
 app.use(express.json({ limit: '10kb' }));
 
-// ==================== GLOBAL RATE LIMIT (15 req/menit total) ====================
-const globalLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: () => 'global',
-  message: 'Server sedang sibuk. Coba lagi setelah 1 menit.'
+// Rate Limiter (15 requests per 15 menit)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  message: 'Too many requests from this IP, please try again after 15 minutes'
 });
-app.use(globalLimiter);
 
-// ==================== SLOW DOWN PER IP (opsional) ====================
 const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000,
   delayAfter: 5,
