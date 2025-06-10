@@ -9,12 +9,17 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Tambah file YOLO
+      - name: Setup Git identity
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Tambahkan file YOLO dan commit
         run: |
           echo "YOLO dari GitHub Actions" >> yolo.txt
-          git config --global user.name "LemonSync"
-          git config --global user.email "grouplemon0@gmail.com"
           git add yolo.txt
           git commit -m "YOLO commit dari Actions"
-          git push origin main
+          git push origin HEAD:main
