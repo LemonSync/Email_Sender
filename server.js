@@ -138,7 +138,6 @@ app.post('/send-email', speedLimiter, validateEmail, async (req, res) => {
     <div style="padding:30px;text-align:center;">
       <h2 style="margin:0;color:#222;font-size:24px;">${subject}</h2>
       <p style="margin:20px 0;font-size:16px;color:#555;line-height:1.6;">${message}</p>
-      <a href="${ctaUrl || '#'}" style="display:inline-block;padding:12px 24px;background:#222;color:#fff;text-decoration:none;border-radius:4px;font-size:16px;">${ctaText || 'Learn More'}</a>
     </div>
     <div style="padding:15px 30px;background:#f0f0f0;border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
       <p style="font-size:12px;color:#888;margin:0;">Exclusive email via <a href="https://lemon-email.vercel.app" style="color:#888;text-decoration:underline;">Lemon Email Sender</a></p>
