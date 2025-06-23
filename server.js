@@ -57,30 +57,103 @@ app.post('/send-email', speedLimiter, validateEmail, async (req, res) => {
     const { to, subject, message, template } = req.body;
 
     const htmlTemplate = {
-      default: `<div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
-      <h2 style="color: #2c3e50;">${subject}</h2>
-      <p style="color: #333; font-size: 16px; line-height: 1.5;">
-        ${message}
-      </p>
-      <hr style="margin: 20px 0;">
-      <p style="font-size: 14px; color: #999;">This message was sent via <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: green;">Lemon Email Sender</a></b></p>
-    </div>`,
-      dark: `<div style="background: #1e1e1e; color: #f0f0f0; padding: 20px; border-radius: 8px; font-family: monospace;">
-            <h2 style="color: #4caf50;">${subject}</h2>
-            <pre style="white-space: pre-wrap; line-height: 1.5; color: #ccc;">${message}</pre>
-            <hr style="border-color: #333;">
-            <p style="font-size: 12px; color: #666;">Powered by <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: #666;">Lemon Email Sender</a></b></p>
-    </div>`,
-      struck: `<div style="padding:20px;border:1px dashed #222;font-size:15px">
-              <tt>Hi <b>${to}</b>
-              <br><br>
-              <p>${message}</p>
-              <br>
-                <hr style="border:0px; border-top:1px dashed #222">
-                 <p>Send with <b><a href="https://lemon-email.vercel.app" style="text-decoration: none;">Lemon Email Sender</a></b></p>
-              </tt>
-      </div>`
-    };
+  default: `<div style="font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+    <h2 style="color: #2c3e50;">${subject}</h2>
+    <p style="color: #333; font-size: 16px; line-height: 1.5;">
+      ${message}
+    </p>
+    <hr style="margin: 20px 0;">
+    <p style="font-size: 14px; color: #999;">This message was sent via <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: green;">Lemon Email Sender</a></b></p>
+  </div>`,
+
+  dark: `<div style="background: #1e1e1e; color: #f0f0f0; padding: 20px; border-radius: 8px; font-family: monospace;">
+    <h2 style="color: #4caf50;">${subject}</h2>
+    <pre style="white-space: pre-wrap; line-height: 1.5; color: #ccc;">${message}</pre>
+    <hr style="border-color: #333;">
+    <p style="font-size: 12px; color: #666;">Powered by <b><a href="https://lemon-email.vercel.app" style="text-decoration: none; color: #666;">Lemon Email Sender</a></b></p>
+  </div>`,
+
+  struck: `<div style="padding:20px;border:1px dashed #222;font-size:15px">
+    <tt>Hi <b>${to}</b>
+    <br><br>
+    <p>${message}</p>
+    <br>
+    <hr style="border:0px; border-top:1px dashed #222">
+    <p>Send with <b><a href="https://lemon-email.vercel.app" style="text-decoration: none;">Lemon Email Sender</a></b></p>
+    </tt>
+  </div>`,
+
+  notificationBox: `<div style="max-width:600px;margin:auto;padding:20px;background:#fff;border-left:6px solid #007BFF;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-family:'Segoe UI',sans-serif;">
+    <h2 style="color:#007BFF;">🔔 ${subject}</h2>
+    <p style="font-size:16px;color:#333;">${message}</p>
+    <div style="margin-top:20px;font-size:13px;color:#888;">
+      Sent using <a href="https://lemon-email.vercel.app" style="color:#007BFF;text-decoration:none;">Lemon Email Sender</a>
+    </div>
+  </div>`,
+
+  juiceBox: `<div style="background:#ffeaa7;padding:25px;border-radius:12px;border:2px dashed #fdcb6e;font-family:'Comic Sans MS',cursive;">
+    <h2 style="color:#d63031;margin-top:0;">${subject}</h2>
+    <p style="font-size:15px;color:#2d3436;">${message}</p>
+    <p style="margin-top:20px;font-size:13px;color:#6c5ce7;">
+      Sent via <a href="https://lemon-email.vercel.app" style="color:#00b894;text-decoration:none;"><b>Lemon Email Sender</b></a>
+    </p>
+  </div>`,
+
+  corporateClean: `<div style="background:#f4f6f8;padding:30px;border-radius:6px;font-family:'Arial',sans-serif;">
+    <table style="width:100%;max-width:600px;margin:auto;background:#fff;border:1px solid #ddd;border-radius:8px;padding:20px;">
+      <tr>
+        <td>
+          <h2 style="color:#34495e;">${subject}</h2>
+          <p style="font-size:16px;color:#2c3e50;line-height:1.6;">${message}</p>
+          <hr style="margin:20px 0;border:none;border-top:1px solid #eee;">
+          <p style="font-size:13px;color:#999;text-align:right;">Sent with <a href="https://lemon-email.vercel.app" style="color:#3498db;text-decoration:none;">Lemon Email Sender</a></p>
+        </td>
+      </tr>
+    </table>
+  </div>`,
+
+  artsyBorder: `<div style="padding:20px;border:4px double #6c5ce7;background:#fdf0ff;border-radius:10px;font-family:'Trebuchet MS',sans-serif;">
+    <h2 style="color:#6c5ce7;">${subject}</h2>
+    <p style="color:#2d3436;font-size:16px;line-height:1.6;">${message}</p>
+    <p style="font-size:12px;color:#a29bfe;margin-top:20px;">Generated with 💛 by <a href="https://lemon-email.vercel.app" style="color:#6c5ce7;text-decoration:underline;">Lemon Email Sender</a></p>
+  </div>`,
+
+  receiptStyle: `<div style="font-family:'Courier New',monospace;background:#fff;padding:20px;border:1px dashed #333;max-width:500px;margin:auto;">
+    <h2 style="border-bottom:1px dashed #000;padding-bottom:5px;">🧾 ${subject}</h2>
+    <pre style="white-space:pre-wrap;font-size:14px;line-height:1.6;">${message}</pre>
+    <hr style="border:none;border-top:1px dashed #000;margin:20px 0;">
+    <p style="font-size:12px;text-align:center;color:#555;">Printed by <a href="https://lemon-email.vercel.app" style="color:#222;text-decoration:none;">Lemon Email Sender</a></p>
+  </div>`,
+
+  magazineClassic: `<div style="background:#ffffff;max-width:600px;margin:20px auto;font-family:Georgia,serif;border-radius:8px;overflow:hidden;border:1px solid #e0e0e0;">
+    <img src="${heroImageUrl || ''}" alt="" style="width:100%;display:block;">
+    <div style="padding:20px;">
+      <h2 style="margin-top:0;color:#333;font-family:'Times New Roman',serif;">${subject}</h2>
+      <p style="font-size:16px;line-height:1.6;color:#555;">${message}</p>
+      <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
+      <p style="font-size:13px;color:#999;text-align:right;">Powered by <a href="https://lemon-email.vercel.app" style="color:#999;text-decoration:none;">Lemon Email Sender</a></p>
+    </div>
+  </div>`,
+
+  luxuryPromo: `<div style="background:#fafafa;max-width:600px;margin:20px auto;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);font-family:'Helvetica Neue',sans-serif;">
+    <div style="padding:30px;text-align:center;">
+      <h2 style="margin:0;color:#222;font-size:24px;">${subject}</h2>
+      <p style="margin:20px 0;font-size:16px;color:#555;line-height:1.6;">${message}</p>
+      <a href="${ctaUrl || '#'}" style="display:inline-block;padding:12px 24px;background:#222;color:#fff;text-decoration:none;border-radius:4px;font-size:16px;">${ctaText || 'Learn More'}</a>
+    </div>
+    <div style="padding:15px 30px;background:#f0f0f0;border-bottom-left-radius:10px;border-bottom-right-radius:10px;">
+      <p style="font-size:12px;color:#888;margin:0;">Exclusive email via <a href="https://lemon-email.vercel.app" style="color:#888;text-decoration:underline;">Lemon Email Sender</a></p>
+    </div>
+  </div>`,
+
+  minimalMono: `<div style="max-width:550px;margin:30px auto;padding:25px;font-family:'Arial',sans-serif;border:1px solid #ddd;border-radius:6px;background:#fff;">
+    <h2 style="font-weight:normal;color:#222;margin-top:0;">${subject}</h2>
+    <p style="color:#444;font-size:15px;line-height:1.7;">${message}</p>
+    <div style="margin-top:30px;font-size:12px;color:#aaa;text-align:center;">
+      Sent using <a href="https://lemon-email.vercel.app" style="color:#aaa;text-decoration:none;">Lemon Email Sender</a>
+    </div>
+  </div>`
+};
 
     const requestKey = `${to}-${subject}-${message.substring(0, 50)}`;
     if (requestCache.has(requestKey)) {
