@@ -126,7 +126,6 @@ app.post('/send-email', speedLimiter, validateEmail, async (req, res) => {
   </div>`,
 
   magazineClassic: `<div style="background:#ffffff;max-width:600px;margin:20px auto;font-family:Georgia,serif;border-radius:8px;overflow:hidden;border:1px solid #e0e0e0;">
-    <img src="${heroImageUrl || ''}" alt="" style="width:100%;display:block;">
     <div style="padding:20px;">
       <h2 style="margin-top:0;color:#333;font-family:'Times New Roman',serif;">${subject}</h2>
       <p style="font-size:16px;line-height:1.6;color:#555;">${message}</p>
