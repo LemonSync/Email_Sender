@@ -79,7 +79,7 @@ Jika ada pertanyaan atau ingin berkontribusi, hubungi saya di:
 - 🌐 **GitHub**: [LemonSync](https://github.com/LemonSync)
 - 📧 **Email**: [grouplemon0@gmail.com](mailto:grouplemon0@gmail.com)
 - 🐦 **Twitter**: [@SyncLemon](https://twitter.com/SyncLemon)
-- 📞 **WhatsApp**: -
+- 📞 **WhatsApp**: [Lemon](https://wa.me/6282172175234)
 
 ---
 
